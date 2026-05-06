@@ -6,6 +6,7 @@ app.secret_key = "secret123"
 
 # ================= DATABASE =================
 def init_db():
+
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
 
@@ -25,234 +26,533 @@ init_db()
 # ================= STYLE =================
 STYLE = """
 <style>
-body { font-family: Arial; margin: 20px; }
-.container { max-width:700px; margin:auto; }
 
-input, button {
+body{
+    font-family:Arial;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:950px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:20px;
+    box-shadow:0px 2px 10px rgba(0,0,0,0.1);
+}
+
+h1,h2,h3{
+    text-align:center;
+}
+
+input{
     width:100%;
-    padding:10px;
+    padding:14px;
     margin-top:10px;
+    border-radius:10px;
+    border:1px solid #ccc;
     font-size:18px;
 }
 
-.card {
-    background:#f2f2f2;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:10px;
-}
-
-/* pilihan kolom */
-.option-grid {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-}
-
-.option-box {
-    border:1px solid #ccc;
-    padding:10px;
-    border-radius:10px;
-}
-
-.option-box:hover {
-    background:#e6f7ff;
-}
-
-table {
+button{
     width:100%;
-    border-collapse: collapse;
+    padding:14px;
+    margin-top:15px;
+    border:none;
+    border-radius:12px;
+    background:#4CAF50;
+    color:white;
+    font-size:20px;
+    cursor:pointer;
 }
 
-th, td {
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:center;
+button:hover{
+    background:#43a047;
 }
+
+.menu-btn{
+    margin-bottom:15px;
+}
+
+.materi-box{
+    background:#eef7ff;
+    padding:18px;
+    border-radius:12px;
+    margin-top:15px;
+    font-size:24px;
+}
+
+.quiz-box{
+    background:#fafafa;
+    padding:25px;
+    border-radius:15px;
+    margin-top:20px;
+    font-size:28px;
+    line-height:2;
+}
+
+.quiz-box input[type="radio"]{
+    transform:scale(2);
+    margin-right:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:12px;
+    text-align:center;
+    font-size:18px;
+}
+
+th{
+    background:#4CAF50;
+    color:white;
+}
+
+.delete-btn{
+    background:red;
+}
+
 </style>
 """
 
 # ================= LOGIN =================
 @app.route("/", methods=["GET","POST"])
 def login():
+
     if request.method == "POST":
-        if request.form.get("password") == "123":
-            session["user"] = request.form.get("username")
+
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # PASSWORD LOGIN
+        if password == "123":
+
+            session["user"] = username
+
             return redirect("/menu")
+
         else:
-            return STYLE + "<h3>Login gagal</h3>"
+
+            return STYLE + """
+            <div class='container'>
+
+                <div class='card'>
+
+                    <h2>Password Login Salah</h2>
+
+                    <a href="/">
+                        <button>Kembali</button>
+                    </a>
+
+                </div>
+
+            </div>
+            """
 
     return STYLE + """
-    <div class="container">
-    <h2>Login</h2>
-    <form method="post">
-        <input name="username" placeholder="Nama">
-        <input type="password" name="password" placeholder="Password">
-        <button>Login</button>
-    </form>
+    <div class='container'>
+
+        <div class='card'>
+
+            <h1>E-Learning Mandarin</h1>
+
+            <form method="post">
+
+                <input type="text"
+                       name="username"
+                       placeholder="Masukkan Nama">
+
+                <input type="password"
+                       name="password"
+                       placeholder="Masukkan Password">
+
+                <button>Login</button>
+
+            </form>
+
+        </div>
+
     </div>
     """
 
 # ================= MENU =================
 @app.route("/menu")
 def menu():
-    user = session.get("user","Guest")
-    return STYLE + f"""
-    <div class="container">
-    <h2>Halo, {user}</h2>
 
-    <a href="/materi"><button>Materi</button></a>
-    <a href="/quiz"><button>Quiz</button></a>
-    <a href="/hasil"><button>Data</button></a>
+    user = session.get("user","Guest")
+
+    return STYLE + f"""
+    <div class='container'>
+
+        <div class='card'>
+
+            <h2>Selamat Datang, {user}</h2>
+
+            <a href="/materi">
+                <button class='menu-btn'>
+                📘 Materi Mandarin
+                </button>
+            </a>
+
+            <a href="/quiz">
+                <button class='menu-btn'>
+                📝 Quiz Mandarin
+                </button>
+            </a>
+
+            <a href="/hasil">
+                <button class='menu-btn'>
+                📊 Data Responden
+                </button>
+            </a>
+
+        </div>
+
     </div>
     """
 
 # ================= MATERI =================
 @app.route("/materi")
 def materi():
+
     return STYLE + """
-    <div class="container">
-    <h2>Materi</h2>
+    <div class='container'>
 
-    <div class="card">你好 → Halo</div>
-    <div class="card">谢谢 → Terima kasih</div>
-    <div class="card">再见 → Sampai jumpa</div>
-    <div class="card">吃饭 → Makan</div>
-    <div class="card">喝 → Minum</div>
-    <div class="card">对不起 → Maaf</div>
-    <div class="card">不客气 → Sama-sama</div>
-    <div class="card">多少钱 → Berapa harga</div>
-    <div class="card">在哪里 → Di mana</div>
-    <div class="card">学习 → Belajar</div>
+        <div class='card'>
 
-    <a href="/menu"><button>Kembali</button></a>
+            <h2>📘 Materi Dasar Mandarin</h2>
+
+            <div class='materi-box'>
+            你好 (nǐ hǎo) = Halo
+            </div>
+
+            <div class='materi-box'>
+            谢谢 (xiè xie) = Terima Kasih
+            </div>
+
+            <div class='materi-box'>
+            再见 (zài jiàn) = Sampai Jumpa
+            </div>
+
+            <div class='materi-box'>
+            对不起 (duì bu qǐ) = Maaf
+            </div>
+
+            <div class='materi-box'>
+            不客气 (bú kè qi) = Sama-sama
+            </div>
+
+            <div class='materi-box'>
+            吃 (chī) = Makan
+            </div>
+
+            <div class='materi-box'>
+            喝 (hē) = Minum
+            </div>
+
+            <div class='materi-box'>
+            学习 (xué xí) = Belajar
+            </div>
+
+            <div class='materi-box'>
+            多少钱 (duō shǎo qián) = Berapa Harga
+            </div>
+
+            <div class='materi-box'>
+            在哪里 (zài nǎ lǐ) = Di Mana
+            </div>
+
+            <a href="/menu">
+                <button>Kembali</button>
+            </a>
+
+        </div>
+
     </div>
     """
 
 # ================= QUIZ =================
 @app.route("/quiz", methods=["GET","POST"])
 def quiz():
+
     user = session.get("user","Guest")
 
-    kunci = {
-        "q1":"A","q2":"B","q3":"A","q4":"B","q5":"A",
-        "q6":"B","q7":"B","q8":"B","q9":"B","q10":"A"
+    jawaban = {
+        "q1":"A",
+        "q2":"B",
+        "q3":"A",
+        "q4":"B",
+        "q5":"A",
+        "q6":"A",
+        "q7":"B",
+        "q8":"A",
+        "q9":"B",
+        "q10":"A"
     }
 
     if request.method == "POST":
+
         score = 0
-        for k in kunci:
-            if request.form.get(k) == kunci[k]:
+
+        for j in jawaban:
+
+            if request.form.get(j) == jawaban[j]:
                 score += 1
 
         conn = sqlite3.connect("data.db")
         c = conn.cursor()
-        c.execute("INSERT INTO responden (nama,nilai) VALUES (?,?)",(user,score))
+
+        c.execute(
+            "INSERT INTO responden (nama,nilai) VALUES (?,?)",
+            (user,score)
+        )
+
         conn.commit()
         conn.close()
 
         return STYLE + f"""
-        <div class="container">
-        <h2>Hasil</h2>
-        <h3>{user}</h3>
-        <h3>Nilai: {score}/10</h3>
-        <a href="/menu"><button>Kembali</button></a>
+        <div class='container'>
+
+            <div class='card'>
+
+                <h2>Hasil Quiz</h2>
+
+                <h3>Nama : {user}</h3>
+
+                <h3>Nilai : {score}/10</h3>
+
+                <a href="/menu">
+                    <button>Kembali</button>
+                </a>
+
+            </div>
+
         </div>
         """
 
     return STYLE + """
-    <div class="container">
-    <h2>Quiz</h2>
-    <form method="post">
+    <div class='container'>
 
-    <div class="card">1. 你好?
-    <div class="option-grid">
-    <label class="option-box"><input type="radio" name="q1" value="A"> Halo</label>
-    <label class="option-box"><input type="radio" name="q1" value="B"> Maaf</label>
-    </div></div>
+        <div class='card'>
 
-    <div class="card">2. 谢谢?
-    <div class="option-grid">
-    <label class="option-box"><input type="radio" name="q2" value="A"> Maaf</label>
-    <label class="option-box"><input type="radio" name="q2" value="B"> Terima kasih</label>
-    </div></div>
+            <h2>📝 Quiz Mandarin</h2>
 
-    <div class="card">3. 吃饭?
-    <div class="option-grid">
-    <label class="option-box"><input type="radio" name="q3" value="A"> Makan</label>
-    <label class="option-box"><input type="radio" name="q3" value="B"> Minum</label>
-    </div></div>
+            <form method="post">
 
-    <div class="card">4. 对不起?
-    <div class="option-grid">
-    <label class="option-box"><input type="radio" name="q4" value="A"> Halo</label>
-    <label class="option-box"><input type="radio" name="q4" value="B"> Maaf</label>
-    </div></div>
+                <div class='quiz-box'>
+                    1. 你好 (nǐ hǎo) artinya?
+                    <br><br>
+                    <input type="radio" name="q1" value="A"> Halo
+                    <br>
+                    <input type="radio" name="q1" value="B"> Maaf
+                </div>
 
-    <div class="card">5. 喝?
-    <div class="option-grid">
-    <label class="option-box"><input type="radio" name="q5" value="A"> Minum</label>
-    <label class="option-box"><input type="radio" name="q5" value="B"> Tidur</label>
-    </div></div>
+                <div class='quiz-box'>
+                    2. 谢谢 (xiè xie) artinya?
+                    <br><br>
+                    <input type="radio" name="q2" value="A"> Belajar
+                    <br>
+                    <input type="radio" name="q2" value="B"> Terima Kasih
+                </div>
 
-    <button>Submit</button>
-    </form>
+                <div class='quiz-box'>
+                    3. 再见 (zài jiàn) artinya?
+                    <br><br>
+                    <input type="radio" name="q3" value="A"> Sampai Jumpa
+                    <br>
+                    <input type="radio" name="q3" value="B"> Minum
+                </div>
 
-    <a href="/menu"><button>Kembali</button></a>
+                <div class='quiz-box'>
+                    4. 对不起 (duì bu qǐ) artinya?
+                    <br><br>
+                    <input type="radio" name="q4" value="A"> Halo
+                    <br>
+                    <input type="radio" name="q4" value="B"> Maaf
+                </div>
+
+                <div class='quiz-box'>
+                    5. 不客气 (bú kè qi) artinya?
+                    <br><br>
+                    <input type="radio" name="q5" value="A"> Sama-sama
+                    <br>
+                    <input type="radio" name="q5" value="B"> Belajar
+                </div>
+
+                <div class='quiz-box'>
+                    6. 吃 (chī) artinya?
+                    <br><br>
+                    <input type="radio" name="q6" value="A"> Makan
+                    <br>
+                    <input type="radio" name="q6" value="B"> Tidur
+                </div>
+
+                <div class='quiz-box'>
+                    7. 喝 (hē) artinya?
+                    <br><br>
+                    <input type="radio" name="q7" value="A"> Belajar
+                    <br>
+                    <input type="radio" name="q7" value="B"> Minum
+                </div>
+
+                <div class='quiz-box'>
+                    8. 学习 (xué xí) artinya?
+                    <br><br>
+                    <input type="radio" name="q8" value="A"> Belajar
+                    <br>
+                    <input type="radio" name="q8" value="B"> Harga
+                </div>
+
+                <div class='quiz-box'>
+                    9. 多少钱 (duō shǎo qián) artinya?
+                    <br><br>
+                    <input type="radio" name="q9" value="A"> Di Mana
+                    <br>
+                    <input type="radio" name="q9" value="B"> Berapa Harga
+                </div>
+
+                <div class='quiz-box'>
+                    10. 在哪里 (zài nǎ lǐ) artinya?
+                    <br><br>
+                    <input type="radio" name="q10" value="A"> Di Mana
+                    <br>
+                    <input type="radio" name="q10" value="B"> Makan
+                </div>
+
+                <button>Submit Quiz</button>
+
+            </form>
+
+            <a href="/menu">
+                <button>Kembali</button>
+            </a>
+
+        </div>
+
     </div>
     """
 
-# ================= DATA =================
+# ================= DATA RESPONDEN =================
 @app.route("/hasil", methods=["GET","POST"])
 def hasil():
+
     if request.method == "POST":
-        if request.form.get("password") != "erwin50125108":
-            return STYLE + "<h3>Password salah</h3>"
+
+        password = request.form.get("password")
+
+        if password != "erwin50125108":
+
+            return STYLE + """
+            <div class='container'>
+                <div class='card'>
+                    <h2>Password Admin Salah</h2>
+                </div>
+            </div>
+            """
 
         conn = sqlite3.connect("data.db")
         c = conn.cursor()
-        data = c.execute("SELECT * FROM responden").fetchall()
+
+        data = c.execute(
+            "SELECT id,nama,nilai FROM responden"
+        ).fetchall()
+
         conn.close()
 
-        html = "<div class='container'><h2>Data</h2><table>"
-        html += "<tr><th>Nama</th><th>Nilai</th><th>Aksi</th></tr>"
+        html = """
+        <div class='container'>
+
+            <div class='card'>
+
+                <h2>📊 Data Responden</h2>
+
+                <table>
+
+                    <tr>
+                        <th>Nama</th>
+                        <th>Nilai</th>
+                        <th>Aksi</th>
+                    </tr>
+        """
 
         for d in data:
+
             html += f"""
             <tr>
-            <td>{d[1]}</td>
-            <td>{d[2]}</td>
-            <td>
-            <form method='post' action='/hapus/{d[0]}'>
-            <input type='password' name='password'>
-            <button>Hapus</button>
-            </form>
-            </td>
+                <td>{d[1]}</td>
+                <td>{d[2]}</td>
+
+                <td>
+                    <a href="/hapus/{d[0]}">
+                        <button class='delete-btn'>
+                        Hapus
+                        </button>
+                    </a>
+                </td>
             </tr>
             """
 
-        html += "</table><br><a href='/menu'><button>Kembali</button></a></div>"
+        html += """
+
+                </table>
+
+                <a href='/menu'>
+                    <button>Kembali</button>
+                </a>
+
+            </div>
+
+        </div>
+        """
+
         return STYLE + html
 
     return STYLE + """
-    <div class="container">
-    <h2>Password Admin</h2>
-    <form method="post">
-        <input type="password" name="password">
-        <button>Lihat</button>
-    </form>
+    <div class='container'>
+
+        <div class='card'>
+
+            <h2>Password Admin</h2>
+
+            <form method="post">
+
+                <input type="password"
+                       name="password"
+                       placeholder="Masukkan Password Admin">
+
+                <button>Lihat Data</button>
+
+            </form>
+
+        </div>
+
     </div>
     """
 
-# ================= HAPUS =================
-@app.route("/hapus/<int:id>", methods=["POST"])
+# ================= HAPUS DATA =================
+@app.route("/hapus/<int:id>")
 def hapus(id):
-    if request.form.get("password") != "erwin50125108":
-        return STYLE + "<h3>Password salah</h3>"
 
     conn = sqlite3.connect("data.db")
     c = conn.cursor()
-    c.execute("DELETE FROM responden WHERE id=?", (id,))
+
+    c.execute(
+        "DELETE FROM responden WHERE id=?",
+        (id,)
+    )
+
     conn.commit()
     conn.close()
 
@@ -260,4 +560,4 @@ def hapus(id):
 
 # ================= RUN =================
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
